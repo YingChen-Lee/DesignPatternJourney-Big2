@@ -29,3 +29,7 @@ std::string Card::ToString() const {
 bool Card::operator<(const Card& card_rhs) const{
     return (ShowdownCard(card_rhs) < 0);
 }
+
+bool Card::operator==(const Card& card_rhs) const{
+    return (ShowdownCard(card_rhs) == 0);
+}

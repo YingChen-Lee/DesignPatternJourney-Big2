@@ -13,6 +13,8 @@ public:
     std::shared_ptr<const Card> DrawCard(int index);
     int get_size() const;
     void Reset();
+    bool HasClub3() const;
+    void Sort();
 
 private:
     std::vector<std::shared_ptr<const Card>> cards_; 

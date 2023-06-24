@@ -13,15 +13,15 @@ void Deck::Shuffle(){
 }
 
 std::shared_ptr<const Card> Deck::DrawOneCard(){
-    auto topCard = cards_.back();
+    auto top_card = cards_.back();
     cards_.pop_back();
-    return topCard;
+    return top_card;
 }
 
-void Deck::PutCard(std::shared_ptr<const Card> card){
+void Deck::PutCard(std::shared_ptr<const Card> card) {
     cards_.push_back(card);
 }
 
 int Deck::size() const{
-    return this->cards_.size();
+    return cards_.size();
 }

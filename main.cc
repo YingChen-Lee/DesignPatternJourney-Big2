@@ -1,39 +1,115 @@
 #include <iostream>
+#include <cstdlib> // for time
+#include <filesystem>
+#include <memory>
 #include <string>
+#include <utility>
+#include <vector>
 
-#include "commandline_interface/input_interface.h"
-#include "commandline_interface/output_interface.h"
+#include "models/big2.h"
 
-#include "models/hand.h"
+#include "models/player.h"
+#include "models/player/human_player.h"
+#include "models/player/ai_player.h"
+#include "models/player/play_strategy/play_strategy.h"
+#include "models/player/play_strategy/null_strategy.h"
+#include "models/player/play_strategy/smallest_first_single.h"
+#include "models/player/play_strategy/smallest_first_pair.h"
+#include "models/player/play_strategy/smallest_first_full_house.h"
+
+#include "io_interface/input_interface.h"
+#include "io_interface/input_interface_file.h"
+#include "io_interface/input_interface_terminal.h"
+#include "io_interface/output_interface.h"
+
+#include "card_pattern_parser/card_pattern_parser.h"
+#include "card_pattern_parser/null_parser.h"
+#include "card_pattern_parser/single_parser.h"
+#include "card_pattern_parser/pair_parser.h"
+#include "card_pattern_parser/straight_parser.h"
+#include "card_pattern_parser/full_house_parser.h"
+
+std::vector<std::string> GetFileNames(const std::string& directory_path) {
+    std::vector<std::string> file_names;
+    for (const auto& entry : std::filesystem::directory_iterator(directory_path)) {
+        if (entry.is_regular_file()) {
+            std::filesystem::path filePath = entry.path();
+            if (filePath.extension() == ".in")
+                file_names.push_back(filePath.stem().string());
+        }
+    }
+    return file_names;
+}
+
+void RunNewGame(std::shared_ptr<InputInterface> input_interface, 
+                std::shared_ptr<OutputInterface> output_interface) {
+    std::shared_ptr<CardPatternParser> card_pattern_parser = std::make_shared<StraightParser>(
+                                                             std::make_shared<FullHouseParser>(
+                                                             std::make_shared<PairParser>(
+                                                             std::make_shared<SingleParser>())));
+    Big2 big2(input_interface, output_interface, card_pattern_parser);
+
+    std::shared_ptr<Player> player1 = std::make_shared<HumanPlayer>(input_interface);
+    std::shared_ptr<Player> player2 = std::make_shared<HumanPlayer>(input_interface); 
+    std::shared_ptr<Player> player3 = std::make_shared<HumanPlayer>(input_interface); 
+    std::shared_ptr<Player> player4 = std::make_shared<HumanPlayer>(input_interface); 
+    
+    big2.AddPlayer(player1);
+    big2.AddPlayer(player2);
+    big2.AddPlayer(player3);
+    big2.AddPlayer(player4);
+
+    big2.Start();
+}
 
 int main() {
-    std::string input_file_name = "../測資集合/fullhouse.in";
-    std::string output_file_name = "../測資集合/my_output/fullhouse.test.out";
+    srand((unsigned) time(NULL));
+    std::string directory_name = "../測資集合/";
 
-    InputInterface input_interface(input_file_name);
-    OutputInterface output_interface(output_file_name);
+    // Play from input files
+    /*
+    std::vector<std::string> input_file_names = GetFileNames(directory_name);
+    for (const auto filename : input_file_names) {
+        std::string input_file_name = directory_name + filename + ".in";
+        std::string output_file_name = directory_name + "my_output/" + filename + ".test.out";
+        std::shared_ptr<InputInterface> input_interface = std::make_shared<InputInterfaceFile>(input_file_name);
+        std::shared_ptr<OutputInterface> output_interface = std::make_shared<OutputInterface>(output_file_name);
+        RunNewGame(input_interface, output_interface);
+    }
+    */
 
-    Deck deck = input_interface.GetDeck();
-    std::vector<std::string> players_name = input_interface.GetPlayersName();
-    std::vector<int> play_indices = input_interface.GetNextPlayIndices();
-    
-    std::cout << "Deck size: " << deck.size() << std::endl;
-    std::cout << "Players name: ";
-    for (const auto& name : players_name)
-        std::cout << name << " ";
-    std::cout << std::endl;
-    
-    std::cout << "Play indices: ";
-    for (const auto& index : play_indices)
-        std::cout << index << " ";
-    std::cout << std::endl;
-    
-    
-    output_interface.OutputMessage("Hello world!\n");
-    Hand hand;
-    for (int i = 0; i < 52; i++)
-        hand.AddCard(deck.DrawOneCard());
-    output_interface.OutputCards(hand.get_cards());
+    // Play from terminal
+    /*
+    std::string output_file_name_terminal = directory_name + "my_output/" + "input_from_terminal.test.out";
+    std::shared_ptr<InputInterface> input_interface = std::make_shared<InputInterfaceTerminal>();
+    std::shared_ptr<OutputInterface> output_interface = std::make_shared<OutputInterface>(output_file_name_terminal);
+    RunNewGame(input_interface, output_interface);
+    */
 
+    std::shared_ptr<CardPatternParser> card_pattern_parser = std::make_shared<StraightParser>(
+                                                             std::make_shared<FullHouseParser>(
+                                                             std::make_shared<PairParser>(
+                                                             std::make_shared<SingleParser>())));
+
+    std::string output_file_name_terminal = directory_name + "my_output/" + "input_from_terminal.test.out";
+    std::shared_ptr<InputInterface> input_interface = std::make_shared<InputInterfaceTerminal>();
+    std::shared_ptr<OutputInterface> output_interface = std::make_shared<OutputInterface>(output_file_name_terminal);
+
+    Big2 big2(input_interface, output_interface, card_pattern_parser);
+
+    std::shared_ptr<Player> player1 = std::make_shared<AiPlayer>(std::make_shared<SmallestFirstFullHouse>(
+                                                                 std::make_shared<SmallestFirstPair>(
+                                                                 std::make_shared<SmallestFirstSingle>())));
+    std::shared_ptr<Player> player2 = std::make_shared<HumanPlayer>(input_interface); 
+    std::shared_ptr<Player> player3 = std::make_shared<HumanPlayer>(input_interface); 
+    std::shared_ptr<Player> player4 = std::make_shared<HumanPlayer>(input_interface); 
+    
+    big2.AddPlayer(player1);
+    big2.AddPlayer(player2);
+    big2.AddPlayer(player3);
+    big2.AddPlayer(player4);
+
+    big2.Start();
+           
     return 0;
 }

@@ -30,6 +30,10 @@ Suit& Suit::operator++(){
     return *this;
 }
 
+bool Suit::operator==(const Suit& suit_rhs) const{
+    return (suit_ == suit_rhs.suit_);
+}
+
 int Suit::ShowdownSuit(Suit rhs_suit) const{
     return static_cast<int>(suit_) - static_cast<int>(rhs_suit.get());
 }

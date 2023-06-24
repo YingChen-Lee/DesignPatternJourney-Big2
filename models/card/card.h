@@ -13,6 +13,7 @@ public:
     Rank get_rank() const;
     std::string ToString() const;
     bool operator<(const Card& card_rhs) const;
+    bool operator==(const Card& card_rhs) const;
 
 private:
     Rank rank_;

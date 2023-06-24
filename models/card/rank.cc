@@ -4,10 +4,10 @@
 #include <iostream>
 
 const std::unordered_map<RankEnum, std::string> Rank::rank_string_map = {
-    {RankEnum::k2, "2"}, {RankEnum::k3, "3"}, {RankEnum::k4, "4"}, {RankEnum::k5, "5"},
+     {RankEnum::k3, "3"}, {RankEnum::k4, "4"}, {RankEnum::k5, "5"},
     {RankEnum::k6, "6"}, {RankEnum::k7, "7"}, {RankEnum::k8, "8"}, {RankEnum::k9, "9"},
     {RankEnum::k10, "10"}, {RankEnum::kJ, "J"}, {RankEnum::kQ, "Q"}, {RankEnum::kK, "K"},
-    {RankEnum::kA, "A"}
+    {RankEnum::kA, "A"}, {RankEnum::k2, "2"}
 };
 
 Rank::Rank(RankEnum rank): rank_(rank) {};
@@ -30,6 +30,10 @@ Rank& Rank::operator++(){
     }
     set(RankEnum(static_cast<int>(rank_) + 1));
     return *this;
+}
+
+bool Rank::operator==(const Rank& rank_rhs) const{
+    return (rank_ == rank_rhs.rank_);
 }
 
 int Rank::ShowdownRank(Rank rank_rhs) const{

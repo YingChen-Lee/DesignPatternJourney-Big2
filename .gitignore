@@ -39,6 +39,9 @@
 *.out
 *.app
 
+# GDB
+*.gdb_history
+
 ### CMake ###
 CMakeLists.txt.user
 CMakeCache.txt

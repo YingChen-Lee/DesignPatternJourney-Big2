@@ -1,31 +1,31 @@
 #pragma once
 
 #include "card/card.h"
-#include "card_pattern/card_pattern.h"
 #include "hand.h"
-
-#include "commandline_interface/input_interface.h"
+#include "turn_move.h"
+#include "turn_info.h"
 
 #include <memory>
 #include <string>
+#include <vector>
 
+class TurnMove;
 class Player {
 public:
-    /*
-    std::shared_ptr<const Card> ShowCard(std::shared_ptr<ShowCardContext> context);
-    void AddCardToHand(std::shared_ptr<const Card> card);
-    int GetHandSize() const ;
-    void ResetData();
-    void set_strategy(std::shared_ptr<ShowCardStrategy> strategy) {strategy_ = strategy;}
-    */
-    void NameSelf(InputInterface& input_interface);
+    Player() = default;
+    virtual void NameSelf() = 0;
     std::string get_name() const { return name_; }
 
-private:
+    void AddCardToHand(std::shared_ptr<const Card> card);
+    bool HasClub3() const;
+    int GetHandSize() const ;
+    std::shared_ptr<Hand> get_hand() const { return hand_; }
+    
+    virtual TurnMove play(const TurnInfo& turn_info) = 0;
+
+    void ResetData();
+    
+protected:
     std::string name_;
-    /*
     std::shared_ptr<Hand> hand_ = std::make_shared<Hand>();
-    std::shared_ptr<ShowCardStrategy> strategy_;
-    int point_;
-    */
 };
