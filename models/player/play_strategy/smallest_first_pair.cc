@@ -5,7 +5,6 @@
 #include <utility>
 
 #include "../../card_pattern/null_pattern.h"
-#include "../../card_pattern/pair.h"
 #include "../../card/rank.h"
 
 #include "strategy_utility.h"
@@ -17,40 +16,29 @@
                          ...]}
 */
 
-bool SmallestFirstPair::IsMatched(const TurnInfo& turn_info, std::shared_ptr<Player> player,
-                                  const std::map<RankEnum, std::vector<Utility::CardIndex>>& rank_to_cards) {
-    // You have no choice but to play Pair if top play is a Pair
-    if (turn_info.top_play->get_card_pattern_name() == Pair::kPair)
-        return true;
-    else if (turn_info.top_play->get_card_pattern_name() != NullPattern::kNullPattern)
-        return false;
-
-    // If top play doesn't exist, check whether we can play a pair
-    bool has_pair = std::any_of(rank_to_cards.begin(), rank_to_cards.end(), 
+bool SmallestFirstPair::HasValidPlayForThisPattern() {
+    return std::any_of(rank_to_cards_->begin(), rank_to_cards_->end(), 
                            [](const auto& rank_cards) { return rank_cards.second.size() >= 2; });
-    if (!has_pair)
-        return false;
-    if (turn_info.should_contain_club_3) {
-        // Need to check if there's any pair for Rank 3 if you want to play a Pair in the 
-        return rank_to_cards.find(RankEnum::k3) != rank_to_cards.end() && 
-               rank_to_cards.at(RankEnum::k3).size() >= 2;
-    }
-    return true;
 }
 
-TurnMove SmallestFirstPair::PlayMatched(const TurnInfo& turn_info, std::shared_ptr<Player> player,
-                                        const std::map<RankEnum, std::vector<Utility::CardIndex>>& rank_to_cards) {
+bool SmallestFirstPair::CanPlayWithClub3() {
+    // Need to check if there's any pair for Rank 3 if you want to play a Pair in the 
+    return rank_to_cards_->find(RankEnum::k3) != rank_to_cards_->end() && 
+           rank_to_cards_->at(RankEnum::k3).size() >= 2;
+}
+
+TurnMove SmallestFirstPair::PlayMatched(const TurnInfo& turn_info, std::shared_ptr<Player> player) {
     if (turn_info.should_contain_club_3) { 
-        assert(Utility::ContainsClub3({rank_to_cards.at(RankEnum::k3)[0].get_card()}) &&
+        assert(Utility::ContainsClub3({rank_to_cards_->at(RankEnum::k3)[0].get_card()}) &&
                 "You should have a club 3 if you want to play a Pair with club 3.");
-        return Utility::DrawCardsAndPlay(player, {rank_to_cards.at(RankEnum::k3)[0], rank_to_cards.at(RankEnum::k3)[1]});
+        return Utility::DrawCardsAndPlay(player, {rank_to_cards_->at(RankEnum::k3)[0], rank_to_cards_->at(RankEnum::k3)[1]});
     }
 
     // has no top play, so can play any pair
     if (turn_info.top_play->get_card_pattern_name() == NullPattern::kNullPattern) {
-        auto it = std::find_if(rank_to_cards.begin(), rank_to_cards.end(), 
+        auto it = std::find_if(rank_to_cards_->begin(), rank_to_cards_->end(), 
                                [](const auto& rank_cards) { return rank_cards.second.size() >= 2; });
-        assert((it != rank_to_cards.end()) && "You should have a pair if you want to play a Pair.");
+        assert((it != rank_to_cards_->end()) && "You should have a pair if you want to play a Pair.");
         // get the smallest rank, and retrieve the first two cards of that rank
         return Utility::DrawCardsAndPlay(player, {it->second[0], it->second[1]});
     }
@@ -67,15 +55,15 @@ TurnMove SmallestFirstPair::PlayMatched(const TurnInfo& turn_info, std::shared_p
       
       If you cannot play a pair with the same rank, then find the smallest rank that is larger than top play.
     */
-    if (rank_to_cards.find(top_play_rank) != rank_to_cards.end() &&
-        rank_to_cards.at(top_play_rank).size() == 2 && 
-        (*(top_play_representative) < rank_to_cards.at(top_play_rank)[1].get_card())) {
-        return Utility::DrawCardsAndPlay(player, {rank_to_cards.at(top_play_rank)[0], rank_to_cards.at(top_play_rank)[1]});
+    if (rank_to_cards_->find(top_play_rank) != rank_to_cards_->end() &&
+        rank_to_cards_->at(top_play_rank).size() == 2 && 
+        (*(top_play_representative) < rank_to_cards_->at(top_play_rank)[1].get_card())) {
+        return Utility::DrawCardsAndPlay(player, {rank_to_cards_->at(top_play_rank)[0], rank_to_cards_->at(top_play_rank)[1]});
     } else {
-        auto it = std::find_if(rank_to_cards.begin(), rank_to_cards.end(),
+        auto it = std::find_if(rank_to_cards_->begin(), rank_to_cards_->end(),
                                 [top_play_rank](const auto& rank_cards) { 
                                     return rank_cards.second.size() >= 2 && rank_cards.first > top_play_rank; });
-        if (it != rank_to_cards.end())
+        if (it != rank_to_cards_->end())
             return Utility::DrawCardsAndPlay(player, {it->second[0], it->second[1]});
         else
             return TurnMove::Pass(player);

@@ -28,13 +28,16 @@ bool ContainsClub3(const std::vector<Card>& cards) {
   
   Note that the order of the cards in the vector is sorted
 */
-std::map<RankEnum, std::vector<CardIndex>> GetRankCardsMap(const std::vector<std::shared_ptr<const Card>>& cards) {
-    std::map<RankEnum, std::vector<CardIndex>> rank_to_cards;
+std::shared_ptr<std::map<RankEnum, std::vector<CardIndex>>> GetRankCardsMap(
+                            const std::vector<std::shared_ptr<const Card>>& cards) {
+    std::shared_ptr<std::map<RankEnum, std::vector<CardIndex>>> rank_to_cards = 
+        std::make_shared<std::map<RankEnum, std::vector<CardIndex>>>();
+
     for (int i = 0; i < cards.size(); i++) {
         Card curr_card = *(cards[i]);
-        rank_to_cards[curr_card.get_rank().get()].push_back(CardIndex(curr_card, i));
+        (*rank_to_cards)[curr_card.get_rank().get()].push_back(CardIndex(curr_card, i));
     }
-    for (auto& rank_cards : rank_to_cards) {
+    for (auto& rank_cards : (*rank_to_cards)) {
         std::sort(rank_cards.second.begin(), rank_cards.second.end());
     }
     return rank_to_cards;

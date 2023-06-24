@@ -36,7 +36,7 @@ bool ContainsClub3(const std::vector<Card>& cards);
   
   Note that the order of the cards in the vector is sorted
 */
-std::map<RankEnum, std::vector<CardIndex>> GetRankCardsMap(const std::vector<std::shared_ptr<const Card>>& cards);
+std::shared_ptr<std::map<RankEnum, std::vector<CardIndex>>> GetRankCardsMap(const std::vector<std::shared_ptr<const Card>>& cards);
 
 TurnMove DrawCardsAndPlay(std::shared_ptr<Player> player, const std::vector<Utility::CardIndex>& card_indices);
 }  // namespace Utility

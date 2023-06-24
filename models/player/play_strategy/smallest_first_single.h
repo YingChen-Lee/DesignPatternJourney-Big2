@@ -3,6 +3,8 @@
 #include "play_strategy.h"
 #include "null_strategy.h"
 
+#include "../../card_pattern/single.h"
+
 #include <memory>
 
 class SmallestFirstSingle : public PlayStrategy {
@@ -10,11 +12,11 @@ public:
     SmallestFirstSingle(std::shared_ptr<PlayStrategy> next) : PlayStrategy(next) {}
     SmallestFirstSingle() : PlayStrategy(std::make_shared<NullStrategy>()) {}
 private:
-    bool IsMatched(const TurnInfo& turn_info, std::shared_ptr<Player> player,
-                   const std::map<RankEnum, std::vector<Utility::CardIndex>>& rank_to_cards) override;
-    TurnMove PlayMatched(const TurnInfo& turn_info, std::shared_ptr<Player> player,
-                         const std::map<RankEnum, std::vector<Utility::CardIndex>>& rank_to_cards) override;
+    std::string GetPatternName() override {return Single::kSingle;}
+    bool HasValidPlayForThisPattern() override;
+    bool CanPlayWithClub3() override;
 
-    std::optional<Utility::CardIndex> GetFirstLargerCardIndex(const Card& top_card,
-                        const std::map<RankEnum, std::vector<Utility::CardIndex>>& rank_to_cards);
+    TurnMove PlayMatched(const TurnInfo& turn_info, std::shared_ptr<Player> player) override;
+
+    std::optional<Utility::CardIndex> GetFirstLargerCardIndex(const Card& top_card);
 };
