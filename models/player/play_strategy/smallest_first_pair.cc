@@ -67,7 +67,8 @@ TurnMove SmallestFirstPair::PlayMatched(const TurnInfo& turn_info, std::shared_p
       
       If you cannot play a pair with the same rank, then find the smallest rank that is larger than top play.
     */
-    if (rank_to_cards.at(top_play_rank).size() == 2 && 
+    if (rank_to_cards.find(top_play_rank) != rank_to_cards.end() &&
+        rank_to_cards.at(top_play_rank).size() == 2 && 
         (*(top_play_representative) < rank_to_cards.at(top_play_rank)[1].get_card())) {
         return Utility::DrawCardsAndPlay(player, {rank_to_cards.at(top_play_rank)[0], rank_to_cards.at(top_play_rank)[1]});
     } else {

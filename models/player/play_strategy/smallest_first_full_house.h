@@ -19,6 +19,8 @@ private:
     TurnMove PlayMatched(const TurnInfo& turn_info, std::shared_ptr<Player> player,
                          const std::map<RankEnum, std::vector<Utility::CardIndex>>& rank_to_cards) override;
     
+    void Reset() override;
+    
     void CountCardsByRank(const std::map<RankEnum, std::vector<Utility::CardIndex>>& rank_to_cards);
     std::vector<RankEnum> ranks_has_more_than_two_cards_;
     std::vector<RankEnum> ranks_has_more_than_three_cards_;

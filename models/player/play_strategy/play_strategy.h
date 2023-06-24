@@ -22,6 +22,7 @@ protected:
                            const std::map<RankEnum, std::vector<Utility::CardIndex>>& rank_to_cards) = 0;
     virtual TurnMove PlayMatched(const TurnInfo& turn_info, std::shared_ptr<Player> player,
                                  const std::map<RankEnum, std::vector<Utility::CardIndex>>& rank_to_cards) = 0;
+    virtual void Reset() {}
 
 private:
     std::shared_ptr<PlayStrategy> next_;

@@ -12,6 +12,7 @@ add_library(lib_play_strategy
     ${CMAKE_CURRENT_SOURCE_DIR}/models/player/play_strategy/smallest_first_single.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/models/player/play_strategy/smallest_first_pair.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/models/player/play_strategy/smallest_first_full_house.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/models/player/play_strategy/smallest_first_straight.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/models/player/play_strategy/strategy_utility.cc
 )
 

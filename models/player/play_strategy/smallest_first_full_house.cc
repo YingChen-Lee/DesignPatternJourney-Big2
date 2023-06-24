@@ -117,3 +117,8 @@ TurnMove SmallestFirstFullHouse::PlayMatched(const TurnInfo& turn_info, std::sha
                                                   pair_it->second[1]});
     }
 }
+
+void SmallestFirstFullHouse::Reset() {
+    ranks_has_more_than_two_cards_.clear();
+    ranks_has_more_than_three_cards_.clear();
+}

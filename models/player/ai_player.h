@@ -20,6 +20,10 @@ class TurnMove;
 class AiPlayer : public Player {
 public:
     AiPlayer(std::shared_ptr<PlayStrategy> play_strategy) : play_strategy_(play_strategy) {}
+    AiPlayer(std::shared_ptr<PlayStrategy> play_strategy, const std::string& name) : play_strategy_(play_strategy) {
+        name_ = name;
+    }
+    
     virtual void NameSelf() override;
     
     virtual TurnMove play(const TurnInfo& turn_info) override;

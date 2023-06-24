@@ -5,9 +5,6 @@
 #include "turn_info.h"
 #include "card_pattern/null_pattern.h"
 
-//TTTIIIMMM
-#include <iostream>
-
 namespace {
 bool ContainsClub3(const std::vector<Card>& cards) {
     for (const auto& card : cards) {
