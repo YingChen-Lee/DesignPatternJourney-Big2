@@ -13,9 +13,16 @@
 #include "../models/card_pattern/straight.h"
 #include "../models/card_pattern/full_house.h"
 
+/*
 const std::unordered_map<SuitEnum, std::string> OutputInterface::suit_enum_to_string = {
     {SuitEnum::kSpade, "S"}, {SuitEnum::kHeart, "H"}, {SuitEnum::kDiamond, "D"},
     {SuitEnum::kClub, "C"}
+};
+*/
+//TTTIIIMMM, prettier
+const std::unordered_map<SuitEnum, std::string> OutputInterface::suit_enum_to_string = {
+    {SuitEnum::kSpade, "♠"}, {SuitEnum::kHeart, "♥"}, {SuitEnum::kDiamond, "♦"},
+    {SuitEnum::kClub, "♣"}
 };
 
 OutputInterface::OutputInterface(const std::string& filepath) : filepath_(filepath) {
@@ -41,11 +48,13 @@ void OutputInterface::OutputMessage(const std::string& message) {
 }
 
 void OutputInterface::OutputStartNewRound() { 
-    OutputMessage("新的回合開始了。\n");
+    OutputMessage("\n\n新的回合開始了。\n"); //TTTIIIMMM, prettier
+    // OutputMessage("新的回合開始了。\n");
 }
 
 void OutputInterface::OutputPlayerTurn(const std::string& player_name) {
-    OutputMessage(std::format("輪到{}了\n", player_name));
+    OutputMessage(std::format("\n輪到{}了\n", player_name)); //TTTIIIMMM, prettier
+    // OutputMessage(std::format("輪到{}了\n", player_name));
 }
 
 void OutputInterface::OutputHand(const Hand& hand){
@@ -57,10 +66,12 @@ void OutputInterface::OutputHand(const Hand& hand){
     for (int i = 0; i < card_strings.size(); i++) {
         std::string index_string = std::to_string(i);
         std::string space = (i != card_strings.size() - 1) ? 
-                             std::string(card_strings[i].size() + 1 - index_string.size(), ' ') : 
+                             std::string(card_strings[i].size() + 1 - 2 - index_string.size(), ' ') : //TTTIIIMMM, prettier
+                            //  std::string(card_strings[i].size() + 1 - index_string.size(), ' ') : 
                              "";
         OutputMessage(index_string + space);
     }
+    OutputMessage("   -1"); //TTTIIIMMM, prettier
     OutputMessage("\n");
     for (int i = 0; i < card_strings.size(); i++) {
         std::string card_string = card_strings[i];
@@ -69,6 +80,7 @@ void OutputInterface::OutputHand(const Hand& hand){
                              "";
         OutputMessage(card_string + space);
     }
+    OutputMessage(" PASS"); //TTTIIIMMM, prettier
     OutputMessage("\n");
 }
 
