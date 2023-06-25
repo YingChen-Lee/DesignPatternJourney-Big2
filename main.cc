@@ -105,15 +105,27 @@ void PlayFromTerminalWithAi() {
     std::shared_ptr<InputInterface> input_interface = std::make_shared<InputInterfaceTerminal>();
     std::shared_ptr<OutputInterface> output_interface = std::make_shared<OutputInterface>(output_file_name);
 
-    std::shared_ptr<Player> player1 = std::make_shared<AiPlayer>(std::make_shared<SmallestFirstStraight>(
-                                                                 std::make_shared<SmallestFirstFullHouse>(
-                                                                 std::make_shared<SmallestFirstPair>(
-                                                                 std::make_shared<SmallestFirstSingle>()))));
-    std::shared_ptr<Player> player2 = std::make_shared<HumanPlayer>(input_interface); 
-    std::shared_ptr<Player> player3 = std::make_shared<HumanPlayer>(input_interface); 
-    std::shared_ptr<Player> player4 = std::make_shared<HumanPlayer>(input_interface); 
+    std::shared_ptr<Player> straight_first_ai = 
+            std::make_shared<AiPlayer>(std::make_shared<SmallestFirstStraight>(
+                                       std::make_shared<SmallestFirstFullHouse>(
+                                       std::make_shared<SmallestFirstPair>(
+                                       std::make_shared<SmallestFirstSingle>()))),
+                                       "straight_first");
+    std::shared_ptr<Player> full_house_first_ai = 
+            std::make_shared<AiPlayer>(std::make_shared<SmallestFirstFullHouse>(
+                                       std::make_shared<SmallestFirstStraight>(
+                                       std::make_shared<SmallestFirstPair>(
+                                       std::make_shared<SmallestFirstSingle>()))),
+                                       "full_house_first");
+    std::shared_ptr<Player> pair_first_ai = 
+            std::make_shared<AiPlayer>(std::make_shared<SmallestFirstPair>(
+                                       std::make_shared<SmallestFirstSingle>(
+                                       std::make_shared<SmallestFirstStraight>(
+                                       std::make_shared<SmallestFirstFullHouse>()))),
+                                       "pair_first");
+    std::shared_ptr<Player> human_player = std::make_shared<HumanPlayer>(input_interface); 
     
-    RunNewGame(input_interface, output_interface, {player1, player2, player3, player4});
+    RunNewGame(input_interface, output_interface, {human_player, straight_first_ai, full_house_first_ai, pair_first_ai});
 }
 
 void AllAiPlay() {
