@@ -52,9 +52,9 @@ int main() {
 
     // PlayFromTerminalWithoutAi();
 
-    // PlayFromTerminalWithAi();
+    PlayFromTerminalWithAi();
 
-    AllAiPlay();
+    // AllAiPlay();
            
     return 0;
 }
