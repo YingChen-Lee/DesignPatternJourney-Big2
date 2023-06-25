@@ -11,9 +11,10 @@
 
 namespace Utility {
 
-bool ContainsClub3(const std::vector<Card>& cards) {
-    for (const auto& card : cards) {
-        if (card.get_suit().get() == SuitEnum::kClub && card.get_rank().get() == RankEnum::k3)
+bool ContainsClub3(const std::vector<CardIndex>& cards) {
+    for (const auto& card_index : cards) {
+        if (card_index.get_card().get_suit().get() == SuitEnum::kClub && 
+                card_index.get_card().get_rank().get() == RankEnum::k3)
             return true;
     }
     return false;

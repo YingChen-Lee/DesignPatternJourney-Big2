@@ -15,11 +15,13 @@ public:
     SmallestFirstStraight(std::shared_ptr<PlayStrategy> next) : PlayStrategy(next) {}
     SmallestFirstStraight() : PlayStrategy(std::make_shared<NullStrategy>()) {}
 private:
-    TurnMove PlayMatched(const TurnInfo& turn_info, std::shared_ptr<Player> player) override;
-    
     std::string GetPatternName() override {return Straight::kStraight;}
     bool HasValidPlayForThisPattern() override;
     bool CanPlayWithClub3() override;
+
+    TurnMove PlayWithClub3(std::shared_ptr<Player> player) override;
+    TurnMove PlaySmallest(std::shared_ptr<Player> player) override;
+    TurnMove PlayBiggerThanTopPlayOrPass(std::shared_ptr<Player> player, const std::shared_ptr<CardPattern> top_play) override;
 
     std::vector<Utility::CardIndex> GetCardsToPlay(
                         RankEnum start_rank, std::optional<Utility::CardIndex> representative_card = std::nullopt);

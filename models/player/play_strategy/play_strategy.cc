@@ -19,7 +19,7 @@ bool PlayStrategy::IsMatched(const TurnInfo& turn_info) {
         return true;
     else if (turn_info.top_play->get_card_pattern_name() != NullPattern::kNullPattern)
         return false;
-        
+
     // top play is Null, so you can play this pattern if you have it
     if (!HasValidPlayForThisPattern())
         return false;
@@ -29,3 +29,14 @@ bool PlayStrategy::IsMatched(const TurnInfo& turn_info) {
 
     return true;
 }
+
+TurnMove PlayStrategy::PlayMatched(const TurnInfo& turn_info, std::shared_ptr<Player> player) {
+    if (turn_info.should_contain_club_3)
+        return PlayWithClub3(player);
+    
+    if (turn_info.top_play->get_card_pattern_name() == NullPattern::kNullPattern)
+        return PlaySmallest(player);
+    
+    return PlayBiggerThanTopPlayOrPass(player, turn_info.top_play);
+}
+

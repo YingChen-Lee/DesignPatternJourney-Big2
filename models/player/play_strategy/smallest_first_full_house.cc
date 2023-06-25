@@ -20,43 +20,31 @@ bool SmallestFirstFullHouse::CanPlayWithClub3() {
     return ranks_has_more_than_two_cards_[0] == RankEnum::k3;
 }
 
-TurnMove SmallestFirstFullHouse::PlayMatched(const TurnInfo& turn_info, std::shared_ptr<Player> player) {
-    if (turn_info.should_contain_club_3) { 
-        assert(Utility::ContainsClub3({rank_to_cards_->at(RankEnum::k3)[0].get_card()}) &&
-                "You should have a club 3 if you want to play a Pair with club 3.");
-        if (ranks_has_more_than_three_cards_[0] == RankEnum::k3) {
-            // It's guranteed that ranks_has_more_than_two_cards_[0] is RankEnum::k3
-            RankEnum rank_pair_to_play = ranks_has_more_than_two_cards_[1];
-            return Utility::DrawCardsAndPlay(player, {rank_to_cards_->at(RankEnum::k3)[0], 
-                                                      rank_to_cards_->at(RankEnum::k3)[1],
-                                                      rank_to_cards_->at(RankEnum::k3)[2],
-                                                      rank_to_cards_->at(rank_pair_to_play)[0],
-                                                      rank_to_cards_->at(rank_pair_to_play)[1]});
-        } else {
-            RankEnum rank_three_to_play = ranks_has_more_than_three_cards_[0];
-            return Utility::DrawCardsAndPlay(player, {rank_to_cards_->at(RankEnum::k3)[0], 
-                                                      rank_to_cards_->at(RankEnum::k3)[1],
-                                                      rank_to_cards_->at(rank_three_to_play)[0],
-                                                      rank_to_cards_->at(rank_three_to_play)[1],
-                                                      rank_to_cards_->at(rank_three_to_play)[2]});
-        }
-    }
+TurnMove SmallestFirstFullHouse::PlayWithClub3(std::shared_ptr<Player> player) {
+    return PlaySmallestFullHouse(player, true);
+}
 
-    // has no top play, so can play any full_house
-    if (turn_info.top_play->get_card_pattern_name() == NullPattern::kNullPattern) {
-        RankEnum rank_three_to_play = ranks_has_more_than_three_cards_[0];
-        RankEnum rank_pair_to_play = ranks_has_more_than_two_cards_[0] == rank_three_to_play ? 
-                                     ranks_has_more_than_two_cards_[1] : 
-                                     ranks_has_more_than_two_cards_[0];
-        return Utility::DrawCardsAndPlay(player, {rank_to_cards_->at(rank_three_to_play)[0], 
-                                                  rank_to_cards_->at(rank_three_to_play)[1],
-                                                  rank_to_cards_->at(rank_three_to_play)[2],
-                                                  rank_to_cards_->at(rank_pair_to_play)[0],
-                                                  rank_to_cards_->at(rank_pair_to_play)[1]});
-    }
+TurnMove SmallestFirstFullHouse::PlaySmallest(std::shared_ptr<Player> player) {
+    return PlaySmallestFullHouse(player, false);
+}
 
-    // Has top play, so need to play a full_house bigger than it
-    std::optional<Card> top_play_representative = turn_info.top_play->GetRepresentiveCard();
+TurnMove SmallestFirstFullHouse::PlaySmallestFullHouse(std::shared_ptr<Player> player, bool should_contain_club_3) {
+    RankEnum rank_three_to_play = ranks_has_more_than_three_cards_[0];
+    RankEnum rank_pair_to_play = ranks_has_more_than_two_cards_[0] == rank_three_to_play ? 
+                                 ranks_has_more_than_two_cards_[1] : 
+                                 ranks_has_more_than_two_cards_[0];
+    std::vector<Utility::CardIndex> cards_to_play = {rank_to_cards_->at(rank_three_to_play)[0], 
+                                                     rank_to_cards_->at(rank_three_to_play)[1],
+                                                     rank_to_cards_->at(rank_three_to_play)[2],
+                                                     rank_to_cards_->at(rank_pair_to_play)[0],
+                                                     rank_to_cards_->at(rank_pair_to_play)[1]};
+    if (should_contain_club_3)
+        assert(Utility::ContainsClub3(cards_to_play) && "You should have a club 3 if you want to play a Pair with club 3.");
+    return Utility::DrawCardsAndPlay(player, cards_to_play);
+}
+
+TurnMove SmallestFirstFullHouse::PlayBiggerThanTopPlayOrPass(std::shared_ptr<Player> player, const std::shared_ptr<CardPattern> top_play) {
+    std::optional<Card> top_play_representative = top_play->GetRepresentiveCard();
     assert(top_play_representative.has_value() && "Top play should have a representative card.");
 
     RankEnum top_play_rank = top_play_representative->get_rank().get();

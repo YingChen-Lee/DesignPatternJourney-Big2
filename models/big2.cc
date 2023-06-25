@@ -105,7 +105,7 @@ void Big2::CurrPlayerPlaysUntilValid(int curr_player_index){
 
         TurnMove turn_move = curr_player->play(info_for_player);
         turn_move.AddParsedCardPattern(ParseCardPattern(turn_move.get_cards()));
-        
+
         has_played_valid_move = IsValidPlay(turn_move);
         if (has_played_valid_move && !turn_move.IsPass()) {
             top_player_index_ = curr_player_index;

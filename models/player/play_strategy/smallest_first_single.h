@@ -15,8 +15,12 @@ private:
     std::string GetPatternName() override {return Single::kSingle;}
     bool HasValidPlayForThisPattern() override;
     bool CanPlayWithClub3() override;
+    
+    TurnMove PlayWithClub3(std::shared_ptr<Player> player) override;
+    TurnMove PlaySmallest(std::shared_ptr<Player> player) override;
+    TurnMove PlayBiggerThanTopPlayOrPass(std::shared_ptr<Player> player, const std::shared_ptr<CardPattern> top_play) override;
 
-    TurnMove PlayMatched(const TurnInfo& turn_info, std::shared_ptr<Player> player) override;
+    TurnMove PlaySmallestCard(std::shared_ptr<Player> player, bool should_contain_club_3 = false);
 
     std::optional<Utility::CardIndex> GetFirstLargerCardIndex(const Card& top_card);
 };

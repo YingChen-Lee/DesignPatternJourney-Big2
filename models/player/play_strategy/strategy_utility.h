@@ -25,7 +25,7 @@ private:
     int index_;
 };
 
-bool ContainsClub3(const std::vector<Card>& cards);
+bool ContainsClub3(const std::vector<CardIndex>& cards);
 
 /**
   return a map from RankEnum to a vector of cards with that rank, also the index in the origin vector
